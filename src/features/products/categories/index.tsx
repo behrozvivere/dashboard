@@ -1,47 +1,32 @@
-export default function CategoriesContent() {
-    return (
-        <div className="space-y-4 w-full">
-            <div className="rounded-md border p-4">
-                <h2 className="text-xl font-semibold mb-2">Product Categories</h2>
-                <p className="text-muted-foreground">
-                    In this section, you can manage product categories.
-                </p>
-                
-                <div className="bg-card rounded-md p-4 mt-4 border">
-                    <div className="flex justify-between items-center mb-4">
-                        <h3 className="font-medium">Add New Category</h3>
-                        <button className="bg-primary text-primary-foreground hover:bg-primary/90 px-3 py-1 rounded-md">Add</button>
-                    </div>
-                    <p>To add a new category, click the Add button.</p>
-                </div>
-                
-                <div className="bg-card rounded-md p-4 mt-4 border">
-                    <h3 className="font-medium mb-2">Existing Categories</h3>
-                    <ul className="space-y-2">
-                        <li className="p-2 hover:bg-muted rounded-md flex justify-between">
-                            <span>Mobile and Tablets</span>
-                            <div>
-                                <button className="text-blue-500 hover:text-blue-700 mr-2">Edit</button>
-                                <button className="text-red-500 hover:text-red-700">Delete</button>
-                            </div>
-                        </li>
-                        <li className="p-2 hover:bg-muted rounded-md flex justify-between">
-                            <span>Laptops and Computers</span>
-                            <div>
-                                <button className="text-blue-500 hover:text-blue-700 mr-2">Edit</button>
-                                <button className="text-red-500 hover:text-red-700">Delete</button>
-                            </div>
-                        </li>
-                        <li className="p-2 hover:bg-muted rounded-md flex justify-between">
-                            <span>Accessories</span>
-                            <div>
-                                <button className="text-blue-500 hover:text-blue-700 mr-2">Edit</button>
-                                <button className="text-red-500 hover:text-red-700">Delete</button>
-                            </div>
-                        </li>
-                    </ul>
-                </div>
-            </div>
+/*src/features/users/index.tsx*/
+
+
+//import { Header } from '@/components/layout/header'
+import { Main } from '@/components/layout/main'
+import { columns } from '@/features/users/components/users-columns.tsx'
+import { UsersDialogs } from '@/features/users/components/users-dialogs'
+import { UsersPrimaryButtons } from '@/features/users/components/users-primary-buttons'
+import { UsersTable } from '@/features/users/components/users-table'
+import UsersProvider from '@/features/users/context/users-context.tsx'
+import { userListSchema } from '@/features/users/data/schema.ts'
+import { users } from '@/features/users/data/users.ts'
+
+export default function Users() {
+  // Parse user list
+  const userList = userListSchema.parse(users)
+
+  return (
+    <UsersProvider>
+      <Main>
+        <div className='mb-2 flex flex-wrap items-center justify-between space-y-2'>
+          <UsersPrimaryButtons />
         </div>
-    )
+        <div className='-mx-4 flex-1 overflow-auto px-4 py-1 lg:flex-row lg:space-y-0 lg:space-x-12'>
+          <UsersTable data={userList} columns={columns} />
+        </div>
+      </Main>
+
+      <UsersDialogs />
+    </UsersProvider>
+  )
 }
