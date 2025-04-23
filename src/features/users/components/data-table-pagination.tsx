@@ -1,3 +1,5 @@
+/*src/features/users/components/data-table-pagination.tsx*/
+
 import {
   ChevronLeftIcon,
   ChevronRightIcon,

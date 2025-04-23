@@ -24,6 +24,7 @@ import { Route as authSignInImport } from './routes/(auth)/sign-in'
 import { Route as authOtpImport } from './routes/(auth)/otp'
 import { Route as authForgotPasswordImport } from './routes/(auth)/forgot-password'
 import { Route as AuthenticatedSettingsRouteImport } from './routes/_authenticated/settings/route'
+import { Route as AuthenticatedProductsRouteImport } from './routes/_authenticated/products/route'
 import { Route as AuthenticatedUsersIndexImport } from './routes/_authenticated/users/index'
 import { Route as AuthenticatedTasksIndexImport } from './routes/_authenticated/tasks/index'
 import { Route as AuthenticatedSettingsIndexImport } from './routes/_authenticated/settings/index'
@@ -35,6 +36,8 @@ import { Route as AuthenticatedSettingsNotificationsImport } from './routes/_aut
 import { Route as AuthenticatedSettingsDisplayImport } from './routes/_authenticated/settings/display'
 import { Route as AuthenticatedSettingsAppearanceImport } from './routes/_authenticated/settings/appearance'
 import { Route as AuthenticatedSettingsAccountImport } from './routes/_authenticated/settings/account'
+import { Route as AuthenticatedProductsLabelsImport } from './routes/_authenticated/products/labels'
+import { Route as AuthenticatedProductsCategoriesImport } from './routes/_authenticated/products/categories'
 
 // Create/Update Routes
 
@@ -117,6 +120,14 @@ const AuthenticatedSettingsRouteRoute = AuthenticatedSettingsRouteImport.update(
   } as any,
 )
 
+const AuthenticatedProductsRouteRoute = AuthenticatedProductsRouteImport.update(
+  {
+    id: '/products',
+    path: '/products',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any,
+)
+
 const AuthenticatedUsersIndexRoute = AuthenticatedUsersIndexImport.update({
   id: '/users/',
   path: '/users/',
@@ -139,9 +150,9 @@ const AuthenticatedSettingsIndexRoute = AuthenticatedSettingsIndexImport.update(
 
 const AuthenticatedProductsIndexRoute = AuthenticatedProductsIndexImport.update(
   {
-    id: '/products/',
-    path: '/products/',
-    getParentRoute: () => AuthenticatedRouteRoute,
+    id: '/',
+    path: '/',
+    getParentRoute: () => AuthenticatedProductsRouteRoute,
   } as any,
 )
 
@@ -192,6 +203,20 @@ const AuthenticatedSettingsAccountRoute =
     getParentRoute: () => AuthenticatedSettingsRouteRoute,
   } as any)
 
+const AuthenticatedProductsLabelsRoute =
+  AuthenticatedProductsLabelsImport.update({
+    id: '/labels',
+    path: '/labels',
+    getParentRoute: () => AuthenticatedProductsRouteRoute,
+  } as any)
+
+const AuthenticatedProductsCategoriesRoute =
+  AuthenticatedProductsCategoriesImport.update({
+    id: '/categories',
+    path: '/categories',
+    getParentRoute: () => AuthenticatedProductsRouteRoute,
+  } as any)
+
 // Populate the FileRoutesByPath interface
 
 declare module '@tanstack/react-router' {
@@ -202,6 +227,13 @@ declare module '@tanstack/react-router' {
       fullPath: ''
       preLoaderRoute: typeof AuthenticatedRouteImport
       parentRoute: typeof rootRoute
+    }
+    '/_authenticated/products': {
+      id: '/_authenticated/products'
+      path: '/products'
+      fullPath: '/products'
+      preLoaderRoute: typeof AuthenticatedProductsRouteImport
+      parentRoute: typeof AuthenticatedRouteImport
     }
     '/_authenticated/settings': {
       id: '/_authenticated/settings'
@@ -287,6 +319,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedIndexImport
       parentRoute: typeof AuthenticatedRouteImport
     }
+    '/_authenticated/products/categories': {
+      id: '/_authenticated/products/categories'
+      path: '/categories'
+      fullPath: '/products/categories'
+      preLoaderRoute: typeof AuthenticatedProductsCategoriesImport
+      parentRoute: typeof AuthenticatedProductsRouteImport
+    }
+    '/_authenticated/products/labels': {
+      id: '/_authenticated/products/labels'
+      path: '/labels'
+      fullPath: '/products/labels'
+      preLoaderRoute: typeof AuthenticatedProductsLabelsImport
+      parentRoute: typeof AuthenticatedProductsRouteImport
+    }
     '/_authenticated/settings/account': {
       id: '/_authenticated/settings/account'
       path: '/account'
@@ -338,10 +384,10 @@ declare module '@tanstack/react-router' {
     }
     '/_authenticated/products/': {
       id: '/_authenticated/products/'
-      path: '/products'
-      fullPath: '/products'
+      path: '/'
+      fullPath: '/products/'
       preLoaderRoute: typeof AuthenticatedProductsIndexImport
-      parentRoute: typeof AuthenticatedRouteImport
+      parentRoute: typeof AuthenticatedProductsRouteImport
     }
     '/_authenticated/settings/': {
       id: '/_authenticated/settings/'
@@ -369,6 +415,24 @@ declare module '@tanstack/react-router' {
 
 // Create and export the route tree
 
+interface AuthenticatedProductsRouteRouteChildren {
+  AuthenticatedProductsCategoriesRoute: typeof AuthenticatedProductsCategoriesRoute
+  AuthenticatedProductsLabelsRoute: typeof AuthenticatedProductsLabelsRoute
+  AuthenticatedProductsIndexRoute: typeof AuthenticatedProductsIndexRoute
+}
+
+const AuthenticatedProductsRouteRouteChildren: AuthenticatedProductsRouteRouteChildren =
+  {
+    AuthenticatedProductsCategoriesRoute: AuthenticatedProductsCategoriesRoute,
+    AuthenticatedProductsLabelsRoute: AuthenticatedProductsLabelsRoute,
+    AuthenticatedProductsIndexRoute: AuthenticatedProductsIndexRoute,
+  }
+
+const AuthenticatedProductsRouteRouteWithChildren =
+  AuthenticatedProductsRouteRoute._addFileChildren(
+    AuthenticatedProductsRouteRouteChildren,
+  )
+
 interface AuthenticatedSettingsRouteRouteChildren {
   AuthenticatedSettingsAccountRoute: typeof AuthenticatedSettingsAccountRoute
   AuthenticatedSettingsAppearanceRoute: typeof AuthenticatedSettingsAppearanceRoute
@@ -393,23 +457,23 @@ const AuthenticatedSettingsRouteRouteWithChildren =
   )
 
 interface AuthenticatedRouteRouteChildren {
+  AuthenticatedProductsRouteRoute: typeof AuthenticatedProductsRouteRouteWithChildren
   AuthenticatedSettingsRouteRoute: typeof AuthenticatedSettingsRouteRouteWithChildren
   AuthenticatedIndexRoute: typeof AuthenticatedIndexRoute
   AuthenticatedAppsIndexRoute: typeof AuthenticatedAppsIndexRoute
   AuthenticatedChatsIndexRoute: typeof AuthenticatedChatsIndexRoute
   AuthenticatedHelpCenterIndexRoute: typeof AuthenticatedHelpCenterIndexRoute
-  AuthenticatedProductsIndexRoute: typeof AuthenticatedProductsIndexRoute
   AuthenticatedTasksIndexRoute: typeof AuthenticatedTasksIndexRoute
   AuthenticatedUsersIndexRoute: typeof AuthenticatedUsersIndexRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
+  AuthenticatedProductsRouteRoute: AuthenticatedProductsRouteRouteWithChildren,
   AuthenticatedSettingsRouteRoute: AuthenticatedSettingsRouteRouteWithChildren,
   AuthenticatedIndexRoute: AuthenticatedIndexRoute,
   AuthenticatedAppsIndexRoute: AuthenticatedAppsIndexRoute,
   AuthenticatedChatsIndexRoute: AuthenticatedChatsIndexRoute,
   AuthenticatedHelpCenterIndexRoute: AuthenticatedHelpCenterIndexRoute,
-  AuthenticatedProductsIndexRoute: AuthenticatedProductsIndexRoute,
   AuthenticatedTasksIndexRoute: AuthenticatedTasksIndexRoute,
   AuthenticatedUsersIndexRoute: AuthenticatedUsersIndexRoute,
 }
@@ -419,6 +483,7 @@ const AuthenticatedRouteRouteWithChildren =
 
 export interface FileRoutesByFullPath {
   '': typeof AuthenticatedRouteRouteWithChildren
+  '/products': typeof AuthenticatedProductsRouteRouteWithChildren
   '/settings': typeof AuthenticatedSettingsRouteRouteWithChildren
   '/forgot-password': typeof authForgotPasswordRoute
   '/otp': typeof authOtpRoute
@@ -431,6 +496,8 @@ export interface FileRoutesByFullPath {
   '/500': typeof errors500Route
   '/503': typeof errors503Route
   '/': typeof AuthenticatedIndexRoute
+  '/products/categories': typeof AuthenticatedProductsCategoriesRoute
+  '/products/labels': typeof AuthenticatedProductsLabelsRoute
   '/settings/account': typeof AuthenticatedSettingsAccountRoute
   '/settings/appearance': typeof AuthenticatedSettingsAppearanceRoute
   '/settings/display': typeof AuthenticatedSettingsDisplayRoute
@@ -438,7 +505,7 @@ export interface FileRoutesByFullPath {
   '/apps': typeof AuthenticatedAppsIndexRoute
   '/chats': typeof AuthenticatedChatsIndexRoute
   '/help-center': typeof AuthenticatedHelpCenterIndexRoute
-  '/products': typeof AuthenticatedProductsIndexRoute
+  '/products/': typeof AuthenticatedProductsIndexRoute
   '/settings/': typeof AuthenticatedSettingsIndexRoute
   '/tasks': typeof AuthenticatedTasksIndexRoute
   '/users': typeof AuthenticatedUsersIndexRoute
@@ -456,6 +523,8 @@ export interface FileRoutesByTo {
   '/500': typeof errors500Route
   '/503': typeof errors503Route
   '/': typeof AuthenticatedIndexRoute
+  '/products/categories': typeof AuthenticatedProductsCategoriesRoute
+  '/products/labels': typeof AuthenticatedProductsLabelsRoute
   '/settings/account': typeof AuthenticatedSettingsAccountRoute
   '/settings/appearance': typeof AuthenticatedSettingsAppearanceRoute
   '/settings/display': typeof AuthenticatedSettingsDisplayRoute
@@ -472,6 +541,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRoute
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
+  '/_authenticated/products': typeof AuthenticatedProductsRouteRouteWithChildren
   '/_authenticated/settings': typeof AuthenticatedSettingsRouteRouteWithChildren
   '/(auth)/forgot-password': typeof authForgotPasswordRoute
   '/(auth)/otp': typeof authOtpRoute
@@ -484,6 +554,8 @@ export interface FileRoutesById {
   '/(errors)/500': typeof errors500Route
   '/(errors)/503': typeof errors503Route
   '/_authenticated/': typeof AuthenticatedIndexRoute
+  '/_authenticated/products/categories': typeof AuthenticatedProductsCategoriesRoute
+  '/_authenticated/products/labels': typeof AuthenticatedProductsLabelsRoute
   '/_authenticated/settings/account': typeof AuthenticatedSettingsAccountRoute
   '/_authenticated/settings/appearance': typeof AuthenticatedSettingsAppearanceRoute
   '/_authenticated/settings/display': typeof AuthenticatedSettingsDisplayRoute
@@ -501,6 +573,7 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | ''
+    | '/products'
     | '/settings'
     | '/forgot-password'
     | '/otp'
@@ -513,6 +586,8 @@ export interface FileRouteTypes {
     | '/500'
     | '/503'
     | '/'
+    | '/products/categories'
+    | '/products/labels'
     | '/settings/account'
     | '/settings/appearance'
     | '/settings/display'
@@ -520,7 +595,7 @@ export interface FileRouteTypes {
     | '/apps'
     | '/chats'
     | '/help-center'
-    | '/products'
+    | '/products/'
     | '/settings/'
     | '/tasks'
     | '/users'
@@ -537,6 +612,8 @@ export interface FileRouteTypes {
     | '/500'
     | '/503'
     | '/'
+    | '/products/categories'
+    | '/products/labels'
     | '/settings/account'
     | '/settings/appearance'
     | '/settings/display'
@@ -551,6 +628,7 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/_authenticated'
+    | '/_authenticated/products'
     | '/_authenticated/settings'
     | '/(auth)/forgot-password'
     | '/(auth)/otp'
@@ -563,6 +641,8 @@ export interface FileRouteTypes {
     | '/(errors)/500'
     | '/(errors)/503'
     | '/_authenticated/'
+    | '/_authenticated/products/categories'
+    | '/_authenticated/products/labels'
     | '/_authenticated/settings/account'
     | '/_authenticated/settings/appearance'
     | '/_authenticated/settings/display'
@@ -631,14 +711,23 @@ export const routeTree = rootRoute
     "/_authenticated": {
       "filePath": "_authenticated/route.tsx",
       "children": [
+        "/_authenticated/products",
         "/_authenticated/settings",
         "/_authenticated/",
         "/_authenticated/apps/",
         "/_authenticated/chats/",
         "/_authenticated/help-center/",
-        "/_authenticated/products/",
         "/_authenticated/tasks/",
         "/_authenticated/users/"
+      ]
+    },
+    "/_authenticated/products": {
+      "filePath": "_authenticated/products/route.tsx",
+      "parent": "/_authenticated",
+      "children": [
+        "/_authenticated/products/categories",
+        "/_authenticated/products/labels",
+        "/_authenticated/products/"
       ]
     },
     "/_authenticated/settings": {
@@ -686,6 +775,14 @@ export const routeTree = rootRoute
       "filePath": "_authenticated/index.tsx",
       "parent": "/_authenticated"
     },
+    "/_authenticated/products/categories": {
+      "filePath": "_authenticated/products/categories.tsx",
+      "parent": "/_authenticated/products"
+    },
+    "/_authenticated/products/labels": {
+      "filePath": "_authenticated/products/labels.tsx",
+      "parent": "/_authenticated/products"
+    },
     "/_authenticated/settings/account": {
       "filePath": "_authenticated/settings/account.tsx",
       "parent": "/_authenticated/settings"
@@ -716,7 +813,7 @@ export const routeTree = rootRoute
     },
     "/_authenticated/products/": {
       "filePath": "_authenticated/products/index.tsx",
-      "parent": "/_authenticated"
+      "parent": "/_authenticated/products"
     },
     "/_authenticated/settings/": {
       "filePath": "_authenticated/settings/index.tsx",
