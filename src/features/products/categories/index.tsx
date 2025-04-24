@@ -1,32 +1,34 @@
-/*src/features/users/index.tsx*/
+/*src/features/products/categories/index.tsx*/
 
+import { columns } from './components/columns'
+import { CategoriesPrimaryButtons } from './components/categories-primary-buttons'
+import { CategoriesTable } from './components/categories-table'
+import { AddEditCategoryForm } from './components/add-edit-category-form'
+import { DeleteCategoryDialog } from './components/delete-category-dialog'
+import CategoriesProvider from './context/categories-context'
+import { categories } from './data/data'
 
-//import { Header } from '@/components/layout/header'
-import { Main } from '@/components/layout/main'
-import { columns } from '@/features/users/components/users-columns.tsx'
-import { UsersDialogs } from '@/features/users/components/users-dialogs'
-import { UsersPrimaryButtons } from '@/features/users/components/users-primary-buttons'
-import { UsersTable } from '@/features/users/components/users-table'
-import UsersProvider from '@/features/users/context/users-context.tsx'
-import { userListSchema } from '@/features/users/data/schema.ts'
-import { users } from '@/features/users/data/users.ts'
-
-export default function Users() {
-  // Parse user list
-  const userList = userListSchema.parse(users)
-
+export default function Categories() {
   return (
-    <UsersProvider>
-      <Main>
-        <div className='mb-2 flex flex-wrap items-center justify-between space-y-2'>
-          <UsersPrimaryButtons />
+    <CategoriesProvider>
+      <div className="w-full px-4">
+        <div className='mb-4 flex items-center justify-between flex-wrap gap-2'>
+          <div>
+            <h2 className='text-2xl font-bold tracking-tight'>Product Categories</h2>
+            <p className='text-muted-foreground'>
+              Manage product categories and subcategories.
+            </p>
+          </div>
+          <CategoriesPrimaryButtons />
         </div>
-        <div className='-mx-4 flex-1 overflow-auto px-4 py-1 lg:flex-row lg:space-y-0 lg:space-x-12'>
-          <UsersTable data={userList} columns={columns} />
+        <div className='w-full'>
+          <CategoriesTable data={categories} columns={columns} />
         </div>
-      </Main>
+      </div>
 
-      <UsersDialogs />
-    </UsersProvider>
+      <AddEditCategoryForm />
+      <DeleteCategoryDialog />
+    </CategoriesProvider>
   )
 }
+

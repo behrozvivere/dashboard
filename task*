@@ -1,0 +1,9 @@
+# products
+ منو دراپ دون به نوار کناری اضافه شده به همراه هدر اصلی
+
+ # category
+ src/features/products/categories/data      فایل های دیتا با توجه به دسته بندی ساخته شده
+ src/features/products/categories/context      فایل های کانتکست با توجه به دسته بندی ساخته شده
+
+ >> components 
+ 
